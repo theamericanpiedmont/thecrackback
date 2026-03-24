@@ -22,6 +22,18 @@ export const structure: StructureResolver = (S) =>
             ])
         ),
 
+// =========================
+      // The Merferkin Crackback
+      // =========================
+
+        S.listItem()
+  .title("Crackback Posts")
+  .schemaType("crackbackPost")
+  .child(
+    S.documentTypeList("crackbackPost")
+      .title("Crackback Posts")
+  ),
+
       // =========================
       // REPORTING
       // =========================

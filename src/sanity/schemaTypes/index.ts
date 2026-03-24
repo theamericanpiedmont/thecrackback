@@ -1,4 +1,4 @@
-console.log("✅ sanity.config.ts LOADED (TAP)")
+console.log("✅ sanity schema loaded (The Crackback)")
 
 import { type SchemaTypeDefinition } from "sanity"
 
@@ -20,6 +20,7 @@ import { artifactEmbedType } from "./artifactEmbedType"
 import { storyImageType } from "./storyImageType"
 import { galleryType } from "./galleryType"
 import { sidenoteType } from "./sidenoteType"
+import { crackbackPostType } from "./crackbackPost"
 
 const typePairs: Array<{ key: string; val: SchemaTypeDefinition | undefined }> = [
   { key: "authorType", val: authorType },
@@ -36,6 +37,7 @@ const typePairs: Array<{ key: string; val: SchemaTypeDefinition | undefined }> =
   { key: "artifactType", val: artifactType },
   { key: "marginaliaType", val: marginaliaType },
   { key: "marginaliaSignalType", val: marginaliaSignalType },
+  { key: "crackbackPostType", val: crackbackPostType },
 
   { key: "sidenoteType", val: sidenoteType },
   { key: "pullQuoteType", val: pullQuoteType },
