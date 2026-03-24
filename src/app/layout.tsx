@@ -1,44 +1,35 @@
 import type { Metadata } from "next"
-import { Spectral } from "next/font/google"
 import "./globals.css"
-import Masthead from "@/components/Masthead"
-import Footer from "@/components/Footer"
 
-
-const spectral = Spectral({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-serif",
-})
-
-export const metadata: Metadata = {
-  title: "The American Piedmont",
-  description: "Where memory meets power.",
-
-icons: {
-    icon: "/icon.png",
-    shortcut: "/favicon.ico",
-    apple: "/apple-icon.png",
+export const metadata = {
+  metadataBase: new URL("https://thecrackback.com"),
+  title: {
+    default: "The Crackback",
+    template: "%s | The Crackback",
   },
-
-openGraph: {
-    images: ["/og"]
-  }
-
-};
+  description: "The business moves no one saw coming.",
+  openGraph: {
+    title: "The Crackback",
+    description: "The business moves no one saw coming.",
+    url: "https://thecrackback.com",
+    siteName: "The Crackback",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Crackback",
+    description: "The business moves no one saw coming.",
+  },
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
-      <body className={`${spectral.variable} antialiased`}>
-  <Masthead />
-  {children}
-  <Footer />
-</body>
+      <body>{children}</body>
     </html>
-  );
+  )
 }
