@@ -25,4 +25,13 @@ const config: Config = {
   plugins: [typography],
 }
 
-export default config
+export default {
+  darkMode: "class",
+  content: [
+    // your existing paths
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}

@@ -1,4 +1,5 @@
 import Link from "next/link"
+import ThemeToggle from "@/components/ThemeToggle"
 
 export default function Masthead() {
   return (
@@ -17,6 +18,11 @@ export default function Masthead() {
           <Link href="/archive">Archive</Link>
         </nav>
       </div>
+
+    <div className="flex items-center gap-4">
+       <ThemeToggle />
+    </div>
+
     </header>
   )
 }

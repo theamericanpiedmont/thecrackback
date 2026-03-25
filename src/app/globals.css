@@ -65,3 +65,7 @@ body {
 .tap-article a:hover {
   text-decoration-thickness: 2px;
 }
+html.dark {
+  background-color: black;
+  color: white;
+}
