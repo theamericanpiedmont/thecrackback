@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import { crackbackPostBySlugQuery } from "@/sanity/lib/queries"
 import { client } from "@/sanity/lib/client"
+import Masthead from "@/components/Masthead"
 
 function SimplePortableText({ value }: { value?: any[] }) {
   if (!value || !Array.isArray(value)) return null
@@ -22,7 +23,10 @@ function SimplePortableText({ value }: { value?: any[] }) {
 
         if (style === "h2") {
           return (
-            <h2 key={block._key || index} className="text-2xl font-semibold tracking-tight">
+            <h2
+              key={block._key || index}
+              className="pt-4 text-2xl font-semibold tracking-[-0.02em] sm:text-3xl"
+            >
               {text}
             </h2>
           )
@@ -30,7 +34,10 @@ function SimplePortableText({ value }: { value?: any[] }) {
 
         if (style === "h3") {
           return (
-            <h3 key={block._key || index} className="text-xl font-semibold tracking-tight">
+            <h3
+              key={block._key || index}
+              className="pt-2 text-xl font-semibold tracking-tight sm:text-2xl"
+            >
               {text}
             </h3>
           )
@@ -40,7 +47,7 @@ function SimplePortableText({ value }: { value?: any[] }) {
           return (
             <blockquote
               key={block._key || index}
-              className="border-l-2 border-black/15 pl-4 italic text-black/75"
+              className="border-l-2 border-black/15 pl-5 italic opacity-75 dark:border-white/15"
             >
               {text}
             </blockquote>
@@ -50,7 +57,7 @@ function SimplePortableText({ value }: { value?: any[] }) {
         return (
           <p
             key={block._key || index}
-            className="text-lg leading-8 text-black/80"
+            className="text-lg leading-8 opacity-80"
           >
             {text}
           </p>
@@ -74,38 +81,42 @@ export default async function CrackbackPostPage({
   }
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-16">
-      <div className="mb-10">
-        {post.company ? (
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black/55">
-            {post.company}
-          </p>
-        ) : null}
+    <main className="min-h-screen">
+      <Masthead />
 
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-balance">
-          {post.title}
-        </h1>
+      <div className="mx-auto max-w-3xl px-6 py-16">
+        <div className="mb-10">
+          {post.company ? (
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] opacity-55">
+              {post.company}
+            </p>
+          ) : null}
 
-        {post.dek ? (
-          <p className="mt-4 text-xl leading-relaxed text-black/75">
-            {post.dek}
-          </p>
-        ) : null}
+          <h1 className="mt-3 text-4xl font-semibold tracking-[-0.03em] text-balance sm:text-5xl">
+            {post.title}
+          </h1>
 
-        {post.publishedAt ? (
-          <p className="mt-4 text-sm text-black/50">
-            {new Date(post.publishedAt).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
-        ) : null}
+          {post.dek ? (
+            <p className="mt-5 text-xl leading-relaxed opacity-80">
+              {post.dek}
+            </p>
+          ) : null}
+
+          {post.publishedAt ? (
+            <p className="mt-5 text-sm opacity-50">
+              {new Date(post.publishedAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          ) : null}
+        </div>
+
+        <article className="tap-article">
+          <SimplePortableText value={post.body} />
+        </article>
       </div>
-
-      <article>
-        <SimplePortableText value={post.body} />
-      </article>
     </main>
   )
 }
