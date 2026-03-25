@@ -9,8 +9,8 @@ export default async function HomePage() {
   const recentPosts = data?.recentPosts || []
 
   return (
-    <main className="min-h-screen bg-white text-black dark:bg-black dark:text-white">
-      <div className="mx-auto max-w-5xl px-6 py-10">
+    <main className="min-h-screen bg-white text-black dark:!bg-black dark:!text-white">
+      <div className="mx-auto max-w-5xl px-6 py-10 bg-transparent">
         <header className="border-b border-black/10 pb-8 dark:border-white/10">
           <div className="flex items-center justify-between">
             <Link
@@ -46,7 +46,7 @@ export default async function HomePage() {
               The Crackback
             </h1>
 
-            <p className="mt-4 text-xl leading-relaxed text-black/75 dark:text-white/75">
+            <p className="mt-4 text-xl leading-relaxed text-black/75 dark:!text-white">
               The business moves no one saw coming.
             </p>
 
