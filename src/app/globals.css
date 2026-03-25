@@ -2,11 +2,21 @@
 
 /* ---------- Theme tokens ---------- */
 :root {
-  --tap-paper: #f6f4ee;
-  --tap-ink: #111113;
+  --site-bg: #f6f4ee;
+  --site-fg: #111113;
+  --site-border: rgba(17, 17, 19, 0.1);
+  --site-muted: rgba(17, 17, 19, 0.7);
+  --site-muted-2: rgba(17, 17, 19, 0.55);
 
-  /* populated by next/font in layout.tsx */
   --serif: var(--font-serif);
+}
+
+html.dark {
+  --site-bg: #000000;
+  --site-fg: #ffffff;
+  --site-border: rgba(255, 255, 255, 0.12);
+  --site-muted: rgba(255, 255, 255, 0.75);
+  --site-muted-2: rgba(255, 255, 255, 0.55);
 }
 
 /* ---------- Base page styling ---------- */
@@ -16,8 +26,8 @@ body {
 }
 
 body {
-  background: var(--tap-paper);
-  color: var(--tap-ink);
+  background: var(--site-bg);
+  color: var(--site-fg);
   font-family: var(--serif), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
@@ -26,8 +36,7 @@ body {
   background: rgba(123, 47, 35, 0.18);
 }
 
-/* ---------- Longform typography (PortableText) ---------- */
-/* Use a wrapper class so we don't accidentally style everything everywhere. */
+/* ---------- Longform typography ---------- */
 .tap-article p {
   margin: 1.25rem 0;
   line-height: 1.75;
@@ -48,7 +57,7 @@ body {
 .tap-article blockquote {
   margin: 1.75rem 0;
   padding-left: 1rem;
-  border-left: 3px solid rgba(17, 17, 19, 0.18);
+  border-left: 3px solid var(--site-border);
   opacity: 0.9;
 }
 
@@ -56,7 +65,6 @@ body {
   font-size: 1.15rem;
 }
 
-/* Links inside essays / field notes */
 .tap-article a {
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -64,9 +72,4 @@ body {
 
 .tap-article a:hover {
   text-decoration-thickness: 2px;
-}
-html.dark,
-html.dark body {
-  background: black !important;
-  color: white !important;
 }
