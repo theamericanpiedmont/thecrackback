@@ -3,6 +3,8 @@ import { client } from "@/sanity/lib/client"
 import { crackbackHomeQuery } from "@/sanity/lib/queries"
 import Masthead from "@/components/Masthead"
 
+export const dynamic = "force-dynamic"
+
 export default async function HomePage() {
   const data = await client.fetch(crackbackHomeQuery)
   const latestPost = data?.latestPost

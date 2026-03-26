@@ -3,6 +3,7 @@ import { client } from "@/sanity/lib/client"
 import { crackbackPostsIndexQuery } from "@/sanity/lib/queries"
 import Masthead from "@/components/Masthead"
 
+export const dynamic = "force-dynamic"
 export default async function ArchivePage() {
   const posts = await client.fetch(crackbackPostsIndexQuery)
 

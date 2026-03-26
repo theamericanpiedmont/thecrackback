@@ -3,6 +3,8 @@ import { crackbackPostBySlugQuery } from "@/sanity/lib/queries"
 import { client } from "@/sanity/lib/client"
 import Masthead from "@/components/Masthead"
 
+export const dynamic = "force-dynamic"
+
 function SimplePortableText({ value }: { value?: any[] }) {
   if (!value || !Array.isArray(value)) return null
 
