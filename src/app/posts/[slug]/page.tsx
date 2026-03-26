@@ -11,17 +11,49 @@ function urlFor(source: any) {
   return builder.image(source)
 }
 
+function SubscriberCutoff() {
+  return (
+    <div className="my-16 border-t border-black/10 pt-8 text-center dark:border-white/10">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] opacity-50">
+        Subscriber Edition
+      </p>
+
+      <p className="mx-auto mt-4 max-w-xl text-lg leading-8 opacity-70">
+        Crackback continues beyond this point with deeper analysis, reporting notes,
+        and supporting material.
+      </p>
+
+      <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-black/10 px-4 py-2 text-sm opacity-70 dark:border-white/10">
+        <span>🔒</span>
+        <span>Full access coming later</span>
+      </div>
+    </div>
+  )
+}
+
 function SimplePortableText({ value }: { value?: any[] }) {
   if (!value || !Array.isArray(value)) return null
 
+  const renderableBlocks = value.filter((block) => !!block?._type)
+  const cutoffIndex =
+    renderableBlocks.length >= 6
+      ? Math.min(
+          renderableBlocks.length - 2,
+          Math.max(3, Math.floor(renderableBlocks.length * 0.6))
+        )
+      : -1
+
   return (
     <div className="space-y-7">
-      {value.map((block, index) => {
-        if (!block?._type) return null
+      {renderableBlocks.map((block, index) => {
+        const pieces: React.ReactNode[] = []
 
-        // Pull Quote
+        if (index === cutoffIndex) {
+          pieces.push(<SubscriberCutoff key={`cutoff-${block._key || index}`} />)
+        }
+
         if (block._type === "pullQuote" || block._type === "tapPullQuote") {
-          return (
+          pieces.push(
             <div
               key={block._key || index}
               className="my-14 border-l-2 border-black/10 pl-6 dark:border-white/20"
@@ -35,11 +67,11 @@ function SimplePortableText({ value }: { value?: any[] }) {
               ) : null}
             </div>
           )
+          return <>{pieces}</>
         }
 
-        // Story Image
         if (block._type === "storyImage" && block.image) {
-          return (
+          pieces.push(
             <figure key={block._key || index} className="my-12">
               <img
                 src={urlFor(block.image).width(1400).url()}
@@ -53,11 +85,11 @@ function SimplePortableText({ value }: { value?: any[] }) {
               ) : null}
             </figure>
           )
+          return <>{pieces}</>
         }
 
-        // Section Break
         if (block._type === "sectionBreak") {
-          return (
+          pieces.push(
             <div
               key={block._key || index}
               className="my-16 text-center text-2xl tracking-[0.35em] opacity-30"
@@ -65,6 +97,7 @@ function SimplePortableText({ value }: { value?: any[] }) {
               ~
             </div>
           )
+          return <>{pieces}</>
         }
 
         if (block._type !== "block") return null
@@ -80,7 +113,7 @@ function SimplePortableText({ value }: { value?: any[] }) {
         const style = block.style || "normal"
 
         if (style === "h2") {
-          return (
+          pieces.push(
             <h2
               key={block._key || index}
               className="pt-10 text-2xl font-semibold tracking-[-0.02em] sm:text-3xl"
@@ -88,10 +121,11 @@ function SimplePortableText({ value }: { value?: any[] }) {
               {text}
             </h2>
           )
+          return <>{pieces}</>
         }
 
         if (style === "h3") {
-          return (
+          pieces.push(
             <h3
               key={block._key || index}
               className="pt-6 text-xl font-semibold tracking-tight sm:text-2xl"
@@ -99,10 +133,11 @@ function SimplePortableText({ value }: { value?: any[] }) {
               {text}
             </h3>
           )
+          return <>{pieces}</>
         }
 
         if (style === "blockquote") {
-          return (
+          pieces.push(
             <blockquote
               key={block._key || index}
               className="border-l-2 border-black/15 pl-5 italic opacity-75 dark:border-white/15"
@@ -110,10 +145,11 @@ function SimplePortableText({ value }: { value?: any[] }) {
               {text}
             </blockquote>
           )
+          return <>{pieces}</>
         }
 
         if (style === "quoteIndent") {
-          return (
+          pieces.push(
             <p
               key={block._key || index}
               className="ml-6 border-l border-black/10 pl-5 text-[18px] leading-relaxed opacity-85 dark:border-white/15"
@@ -121,9 +157,10 @@ function SimplePortableText({ value }: { value?: any[] }) {
               {text}
             </p>
           )
+          return <>{pieces}</>
         }
 
-        return (
+        pieces.push(
           <p
             key={block._key || index}
             className="text-lg leading-8 opacity-80"
@@ -131,6 +168,8 @@ function SimplePortableText({ value }: { value?: any[] }) {
             {text}
           </p>
         )
+
+        return <>{pieces}</>
       })}
     </div>
   )
