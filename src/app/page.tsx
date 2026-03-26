@@ -37,7 +37,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="max-w-3xl pt-10">
+          <div className="max-w-3xl pt-8">
             <p className="text-[11px] font-semibold uppercase tracking-[0.24em] opacity-55">
               Business strategy
             </p>
