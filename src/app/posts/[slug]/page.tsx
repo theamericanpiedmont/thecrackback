@@ -15,7 +15,7 @@ function SimplePortableText({ value }: { value?: any[] }) {
   if (!value || !Array.isArray(value)) return null
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-7">
       {value.map((block, index) => {
         if (!block?._type) return null
 
@@ -24,7 +24,7 @@ function SimplePortableText({ value }: { value?: any[] }) {
           return (
             <div
               key={block._key || index}
-              className="my-12 border-l-2 border-black/10 pl-6 dark:border-white/20"
+              className="my-14 border-l-2 border-black/10 pl-6 dark:border-white/20"
             >
               <blockquote className="text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">
                 {block.text}
@@ -40,7 +40,7 @@ function SimplePortableText({ value }: { value?: any[] }) {
         // Story Image
         if (block._type === "storyImage" && block.image) {
           return (
-            <figure key={block._key || index} className="my-10">
+            <figure key={block._key || index} className="my-12">
               <img
                 src={urlFor(block.image).width(1400).url()}
                 alt={block.alt || block.caption || ""}
@@ -60,14 +60,13 @@ function SimplePortableText({ value }: { value?: any[] }) {
           return (
             <div
               key={block._key || index}
-              className="my-12 text-center text-2xl tracking-[0.35em] opacity-35"
+              className="my-16 text-center text-2xl tracking-[0.35em] opacity-30"
             >
               ~
             </div>
           )
         }
 
-        // Ignore unsupported non-text blocks for now
         if (block._type !== "block") return null
 
         const text =
@@ -84,7 +83,7 @@ function SimplePortableText({ value }: { value?: any[] }) {
           return (
             <h2
               key={block._key || index}
-              className="pt-6 text-2xl font-semibold tracking-[-0.02em] sm:text-3xl"
+              className="pt-10 text-2xl font-semibold tracking-[-0.02em] sm:text-3xl"
             >
               {text}
             </h2>
@@ -95,7 +94,7 @@ function SimplePortableText({ value }: { value?: any[] }) {
           return (
             <h3
               key={block._key || index}
-              className="pt-3 text-xl font-semibold tracking-tight sm:text-2xl"
+              className="pt-6 text-xl font-semibold tracking-tight sm:text-2xl"
             >
               {text}
             </h3>
@@ -154,13 +153,15 @@ export default async function CrackbackPostPage({
     <main className="min-h-screen">
       <Masthead />
 
-      <div className="mx-auto max-w-3xl px-6 py-16">
+      <div className="mx-auto max-w-3xl px-6 pb-24 pt-14">
+        
+        {/* HERO IMAGE (smaller + tighter) */}
         {post.coverImage ? (
-          <figure className="mb-10">
+          <figure className="mb-10 overflow-hidden rounded-sm">
             <img
-              src={urlFor(post.coverImage).width(1600).url()}
+              src={urlFor(post.coverImage).width(1400).height(700).url()}
               alt={post.coverImage?.alt || post.title || ""}
-              className="max-h-[560px] w-full rounded-sm object-cover"
+              className="h-[220px] w-full object-cover sm:h-[260px] md:h-[300px]"
             />
             {post.coverImage?.caption ? (
               <figcaption className="mt-3 text-sm opacity-60">
@@ -170,19 +171,20 @@ export default async function CrackbackPostPage({
           </figure>
         ) : null}
 
-        <div className="mb-10">
+        {/* HEADER */}
+        <div className="mb-12">
           {post.company ? (
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] opacity-55">
               {post.company}
             </p>
           ) : null}
 
-          <h1 className="mt-3 text-4xl font-semibold tracking-[-0.03em] text-balance sm:text-5xl">
+          <h1 className="mt-3 text-4xl font-semibold leading-[1.05] tracking-[-0.04em] text-balance sm:text-5xl">
             {post.title}
           </h1>
 
           {post.dek ? (
-            <p className="mt-5 text-xl leading-relaxed opacity-80">
+            <p className="mt-5 max-w-xl text-xl leading-relaxed opacity-80">
               {post.dek}
             </p>
           ) : null}
@@ -198,9 +200,16 @@ export default async function CrackbackPostPage({
           ) : null}
         </div>
 
+        {/* BODY */}
         <article className="tap-article">
           <SimplePortableText value={post.body} />
         </article>
+
+        {/* END CAP (new) */}
+        <div className="mt-20 border-t border-black/10 pt-10 text-sm opacity-40 dark:border-white/10">
+          The Crackback
+        </div>
+
       </div>
     </main>
   )
