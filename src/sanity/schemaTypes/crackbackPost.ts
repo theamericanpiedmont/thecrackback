@@ -1,5 +1,4 @@
-// src/sanity/schemaTypes/crackbackPost.ts
-import { defineField, defineType } from "sanity"
+import {defineField, defineType} from "sanity"
 
 export const crackbackPostType = defineType({
   name: "crackbackPost",
@@ -12,48 +11,59 @@ export const crackbackPostType = defineType({
       type: "string",
       validation: (Rule) => Rule.required(),
     }),
+
     defineField({
       name: "slug",
       title: "Slug",
       type: "slug",
-      options: { source: "title", maxLength: 96 },
+      options: {source: "title"},
       validation: (Rule) => Rule.required(),
     }),
-    defineField({
-      name: "publishedAt",
-      title: "Published at",
-      type: "datetime",
-      validation: (Rule) => Rule.required(),
-    }),
+
     defineField({
       name: "dek",
       title: "Dek",
       type: "text",
       rows: 3,
     }),
+
     defineField({
       name: "company",
       title: "Company",
       type: "string",
     }),
+
+    defineField({
+      name: "publishedAt",
+      title: "Published At",
+      type: "datetime",
+    }),
+
     defineField({
       name: "coverImage",
-      title: "Cover image",
+      title: "Cover Image",
       type: "image",
-      options: { hotspot: true },
+      options: {
+        hotspot: true,
+      },
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Alt text",
+          type: "string",
+        }),
+        defineField({
+          name: "caption",
+          title: "Caption",
+          type: "string",
+        }),
+      ],
     }),
+
     defineField({
       name: "body",
       title: "Body",
       type: "blockContent",
-      validation: (Rule) => Rule.required(),
     }),
   ],
-  preview: {
-    select: {
-      title: "title",
-      subtitle: "company",
-      media: "coverImage",
-    },
-  },
 })

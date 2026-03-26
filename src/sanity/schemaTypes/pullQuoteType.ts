@@ -2,7 +2,7 @@
 import { defineType, defineField } from "sanity"
 
 export const pullQuoteType = defineType({
-  name: "tapPullQuote",
+  name: "pullQuote",
   title: "Pull Quote",
   type: "object",
   fields: [
