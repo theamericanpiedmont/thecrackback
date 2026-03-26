@@ -206,9 +206,23 @@ export default async function CrackbackPostPage({
         </article>
 
         {/* END CAP (new) */}
-        <div className="mt-20 border-t border-black/10 pt-10 text-sm opacity-40 dark:border-white/10">
-          The Crackback
-        </div>
+        <div className="mt-20 border-t border-black/10 pt-10 text-sm dark:border-white/10">
+  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    
+    <a
+      href="mailto:rick@thecrackback.com"
+      className="flex items-center gap-2 opacity-60 transition-opacity hover:opacity-100"
+    >
+      <span>✉️</span>
+      <span>Contact the author</span>
+    </a>
+
+    <div className="opacity-40">
+      © {new Date().getFullYear()} The Crackback. All rights reserved.
+    </div>
+
+  </div>
+</div>
 
       </div>
     </main>
