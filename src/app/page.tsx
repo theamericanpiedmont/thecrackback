@@ -10,53 +10,53 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen">
-      <div className="mx-auto max-w-5xl px-6 py-16">
+      <div className="mx-auto max-w-5xl px-6 py-10">
         <header className="border-b border-black/10 pb-10 dark:border-white/10">
-  <div className="flex items-center justify-between">
-    <Link
-      href="/"
-      className="text-[11px] font-semibold uppercase tracking-[0.28em]"
-    >
-      The Crackback
-    </Link>
+          <div className="flex items-center justify-between">
+            <Link
+              href="/"
+              className="text-[11px] font-semibold uppercase tracking-[0.28em]"
+            >
+              The Crackback
+            </Link>
 
-    <div className="flex items-center gap-5">
-      <nav className="flex items-center gap-5 text-[11px] uppercase tracking-[0.22em] opacity-70">
-        <Link href="/" className="transition hover:opacity-100">
-          Home
-        </Link>
-        <Link href="/about" className="transition hover:opacity-100">
-          About
-        </Link>
-        <Link href="/archive" className="transition hover:opacity-100">
-          Archive
-        </Link>
-      </nav>
+            <div className="flex items-center gap-5">
+              <nav className="flex items-center gap-5 text-[11px] uppercase tracking-[0.22em] opacity-70">
+                <Link href="/" className="transition hover:opacity-100">
+                  Home
+                </Link>
+                <Link href="/about" className="transition hover:opacity-100">
+                  About
+                </Link>
+                <Link href="/archive" className="transition hover:opacity-100">
+                  Archive
+                </Link>
+              </nav>
 
-      <ThemeToggle />
-    </div>
-  </div>
+              <ThemeToggle />
+            </div>
+          </div>
 
-  <div className="mt-14 max-w-3xl">
-    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] opacity-55">
-      Business strategy
-    </p>
+          <div className="max-w-3xl pt-10">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] opacity-55">
+              Business strategy
+            </p>
 
-    <h1 className="mt-4 text-5xl font-semibold tracking-[-0.03em] text-balance sm:text-6xl">
-      The Crackback
-    </h1>
+            <h1 className="mt-4 text-5xl font-semibold tracking-[-0.03em] text-balance sm:text-6xl">
+              The Crackback
+            </h1>
 
-    <p className="mt-5 max-w-2xl text-xl leading-relaxed opacity-80 sm:text-2xl">
-      The business moves no one saw coming.
-    </p>
+            <p className="mt-5 max-w-2xl text-xl leading-relaxed opacity-80 sm:text-2xl">
+              The business moves no one saw coming.
+            </p>
 
-    <p className="mt-5 max-w-2xl text-base leading-7 opacity-65">
-      We break down the hidden strategies behind the world’s biggest
-      companies using filings, earnings calls, and a sharp eye for what
-      everyone else misses.
-    </p>
-  </div>
-</header>
+            <p className="mt-5 max-w-2xl text-base leading-7 opacity-70">
+              We break down the hidden strategies behind the world’s biggest
+              companies using filings, earnings calls, and a sharp eye for what
+              everyone else misses.
+            </p>
+          </div>
+        </header>
 
         <section className="py-12">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] opacity-60">
