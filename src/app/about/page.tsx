@@ -12,7 +12,7 @@ export default function AboutPage() {
           </p>
 
           <h1 className="mt-4 text-5xl font-semibold tracking-[-0.03em] sm:text-6xl">
-            What The Crackback is for
+            What's The Crackback?
           </h1>
 
           <p className="mt-6 text-xl leading-relaxed opacity-80">
