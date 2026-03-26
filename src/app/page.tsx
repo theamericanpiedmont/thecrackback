@@ -30,7 +30,6 @@ function LockedCard({
 }) {
   return (
     <div className="relative overflow-hidden rounded-sm border border-black/10 bg-black/[0.02] p-5 dark:border-white/10 dark:bg-white/[0.03]">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/90 dark:to-black/80" />
       <div className="mb-3 flex items-center justify-between">
         <span className="text-[10px] font-semibold uppercase tracking-[0.2em] opacity-50">
           Subscribers
@@ -38,11 +37,11 @@ function LockedCard({
         <span className="text-xs opacity-40">Locked</span>
       </div>
 
-      <h3 className="max-w-md text-2xl font-semibold tracking-[-0.02em] opacity-75 blur-[1px]">
+      <h3 className="max-w-md text-2xl font-semibold tracking-[-0.02em] opacity-60">
         {title}
       </h3>
 
-      <p className="mt-3 max-w-md text-[16px] leading-7 opacity-60 blur-[1px]">
+      <p className="mt-3 max-w-md text-[16px] leading-7 opacity-55">
         {dek}
       </p>
 
@@ -62,39 +61,46 @@ export default async function HomePage() {
 
       <div className="mx-auto max-w-6xl px-6 pb-24 pt-10">
         {lead ? (
-          <section className="mx-auto mb-20 max-w-4xl">
-            <Link href={`/posts/${lead.slug}`} className="block">
-              {lead.company ? (
-                <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] opacity-50">
-                  {lead.company}
-                </p>
-              ) : null}
+          <section className="mx-auto mb-24 max-w-6xl">
+            <Link
+              href={`/posts/${lead.slug}`}
+              className="block transition-opacity duration-200 hover:opacity-90"
+            >
+              <div className="grid gap-10 md:grid-cols-2 md:items-center">
+                <div>
+                  {lead.company ? (
+                    <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] opacity-50">
+                      {lead.company}
+                    </p>
+                  ) : null}
 
-              <h1 className="max-w-3xl text-4xl font-semibold tracking-[-0.04em] text-balance sm:text-5xl md:text-6xl">
-                {lead.title}
-              </h1>
+                  <h1 className="text-4xl font-semibold leading-[1.05] tracking-[-0.04em] text-balance sm:text-5xl md:text-6xl">
+                    {lead.title}
+                  </h1>
 
-              {lead.dek ? (
-                <p className="mt-5 max-w-2xl text-lg leading-8 opacity-75 sm:text-xl">
-                  {lead.dek}
-                </p>
-              ) : null}
+                  {lead.dek ? (
+                    <p className="mt-5 max-w-xl text-lg leading-8 opacity-75 sm:text-xl">
+                      {lead.dek}
+                    </p>
+                  ) : null}
 
-              {lead.publishedAt ? (
-                <p className="mt-4 text-sm opacity-45">
-                  {formatDate(lead.publishedAt)}
-                </p>
-              ) : null}
+                  {lead.publishedAt ? (
+                    <p className="mt-5 text-sm opacity-45">
+                      {formatDate(lead.publishedAt)}
+                    </p>
+                  ) : null}
+                </div>
 
-              {lead.coverImage ? (
-                <figure className="mt-8 overflow-hidden rounded-sm border border-black/5 dark:border-white/10">
-                  <img
-                    src={urlFor(lead.coverImage).width(1400).height(700).url()}
-                    alt={lead.coverImage?.alt || lead.title || ""}
-                    className="h-[180px] w-full object-cover sm:h-[220px] md:h-[260px]"
-                  />
-                </figure>
-              ) : null}
+                {lead.coverImage ? (
+                  <figure className="overflow-hidden rounded-sm border border-black/5 dark:border-white/10">
+                    <img
+                      src={urlFor(lead.coverImage).width(1200).height(800).url()}
+                      alt={lead.coverImage?.alt || lead.title || ""}
+                      className="h-[260px] w-full object-cover md:h-[320px]"
+                    />
+                  </figure>
+                ) : null}
+              </div>
             </Link>
           </section>
         ) : null}
@@ -147,27 +153,25 @@ export default async function HomePage() {
               ))}
             </div>
           ) : (
-            <div className="max-w-2xl">
+            <div className="max-w-xl">
               <p className="text-lg leading-8 opacity-65">
-                More reporting is on the way.
+                Crackback publishes deliberately. More stories will appear here soon.
               </p>
             </div>
           )}
         </section>
 
         <section className="mt-24 border-t border-black/10 pt-8 dark:border-white/10">
-          <div className="mb-8 flex items-end justify-between gap-6">
-            <div>
-              <h2 className="text-sm font-semibold uppercase tracking-[0.18em] opacity-55">
-                Subscriber Edition
-              </h2>
-              <p className="mt-3 max-w-2xl text-lg leading-8 opacity-70">
-                Deep dives, document work, and extra reporting for readers who want the full file.
-              </p>
-            </div>
+          <div className="mb-8">
+            <h2 className="text-sm font-semibold uppercase tracking-[0.18em] opacity-55">
+              Subscriber Edition
+            </h2>
+            <p className="mt-3 max-w-2xl text-lg leading-8 opacity-70">
+              Deep dives, document work, and extra reporting for readers who want the full file.
+            </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-10 md:grid-cols-3">
             <LockedCard
               title="The hidden economics behind Universes Beyond"
               dek="What Magic actually became inside Hasbro, and why the rest of the toy business now revolves around it."
@@ -188,6 +192,22 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+
+        <div className="mt-24 border-t border-black/10 pt-10 text-sm dark:border-white/10">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <a
+              href="mailto:rick@thecrackback.com"
+              className="flex items-center gap-2 opacity-60 transition-opacity hover:opacity-100"
+            >
+              <span className="text-base">✉︎</span>
+              <span>Contact the author</span>
+            </a>
+
+            <div className="opacity-40">
+              © {new Date().getFullYear()} The Crackback. All rights reserved.
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   )
