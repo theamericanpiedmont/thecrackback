@@ -50,10 +50,142 @@ function LockedCard({
   )
 }
 
+function SquibCard({ squib }: { squib: any }) {
+  return (
+    <article className="mx-auto max-w-md py-4 text-center">
+      <Link href={`/squibs/${squib.slug}`} className="block">
+        
+        <div className="text-[10px] font-semibold uppercase tracking-[0.2em] opacity-40">
+          Squib
+        </div>
+
+        {squib.squibType === "quote" && squib.quoteText ? (
+          <>
+            <blockquote className="mt-3 text-lg font-semibold leading-snug tracking-tight sm:text-xl">
+              “{squib.quoteText}”
+            </blockquote>
+
+            {squib.attribution ? (
+              <p className="mt-2 text-xs opacity-55">
+                — {squib.attribution}
+              </p>
+            ) : null}
+          </>
+        ) : squib.squibType === "image" && squib.image ? (
+          <>
+            <figure className="mt-4 overflow-hidden rounded-sm">
+              <img
+                src={urlFor(squib.image).width(800).height(500).url()}
+                alt={squib.image?.alt || squib.title || ""}
+                className="mx-auto h-auto max-h-[220px] w-full object-cover"
+              />
+            </figure>
+
+            <h3 className="mt-3 text-lg font-semibold tracking-tight">
+              {squib.title}
+            </h3>
+
+            {squib.summary ? (
+              <p className="mt-2 text-sm leading-6 opacity-70">
+                {squib.summary}
+              </p>
+            ) : null}
+          </>
+        ) : (
+          <>
+            <h3 className="mt-3 text-lg font-semibold tracking-tight">
+              {squib.title}
+            </h3>
+
+            {squib.summary ? (
+              <p className="mt-2 text-sm leading-6 opacity-70">
+                {squib.summary}
+              </p>
+            ) : null}
+
+            {squib.squibType === "social" ? (
+              <p className="mt-2 text-xs opacity-50">
+                {squib.socialPlatform
+                  ? squib.socialPlatform.charAt(0).toUpperCase() +
+                    squib.socialPlatform.slice(1)
+                  : "Social"}
+                {squib.socialHandle ? ` · ${squib.socialHandle}` : ""}
+              </p>
+            ) : squib.sourceName ? (
+              <p className="mt-2 text-xs opacity-50">
+                {squib.sourceName}
+              </p>
+            ) : null}
+          </>
+        )}
+      </Link>
+    </article>
+  )
+}
+
+
+function PostCard({ post }: { post: any }) {
+  return (
+    <article className="group">
+      <Link href={`/posts/${post.slug}`} className="block">
+        {post.coverImage ? (
+          <figure className="mb-4 overflow-hidden rounded-sm">
+            <img
+              src={urlFor(post.coverImage).width(1000).height(620).url()}
+              alt={post.coverImage?.alt || post.title || ""}
+              className="h-[180px] w-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
+            />
+          </figure>
+        ) : null}
+
+        {post.company ? (
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] opacity-50">
+            {post.company}
+          </p>
+        ) : null}
+
+        <h3 className="max-w-xl text-2xl font-semibold tracking-[-0.02em] text-balance">
+          {post.title}
+        </h3>
+
+        {post.dek ? (
+          <p className="mt-3 max-w-xl text-[17px] leading-7 opacity-72">
+            {post.dek}
+          </p>
+        ) : null}
+
+        {post.publishedAt ? (
+          <p className="mt-3 text-sm opacity-45">
+            {formatDate(post.publishedAt)}
+          </p>
+        ) : null}
+      </Link>
+    </article>
+  )
+}
+
+function interleavePostsAndSquibs(posts: any[], squibs: any[]) {
+  const items: Array<
+    | { type: "post"; data: any }
+    | { type: "squib"; data: any }
+  > = []
+
+  const max = Math.max(posts.length, squibs.length)
+
+  for (let i = 0; i < max; i++) {
+    if (squibs[i]) items.push({ type: "squib", data: squibs[i] })
+    if (posts[i]) items.push({ type: "post", data: posts[i] })
+  }
+
+  return items
+}
+
 export default async function HomePage() {
   const data = await client.fetch(crackbackHomeQuery)
   const lead = data?.latestPost
   const recent = data?.recentPosts || []
+  const squibs = data?.squibs || []
+  const feedItems = interleavePostsAndSquibs(recent, squibs)
 
   return (
     <main className="min-h-screen">
@@ -108,49 +240,25 @@ export default async function HomePage() {
         <section className="border-t border-black/10 pt-8 dark:border-white/10">
           <div className="mb-8">
             <h2 className="text-sm font-semibold uppercase tracking-[0.18em] opacity-55">
-              Recent
+              Latest
             </h2>
           </div>
 
-          {recent.length ? (
-            <div className="grid gap-x-10 gap-y-14 md:grid-cols-2">
-              {recent.map((post: any) => (
-                <article key={post._id} className="group">
-                  <Link href={`/posts/${post.slug}`} className="block">
-                    {post.coverImage ? (
-                      <figure className="mb-4 overflow-hidden rounded-sm">
-                        <img
-                          src={urlFor(post.coverImage).width(1000).height(620).url()}
-                          alt={post.coverImage?.alt || post.title || ""}
-                          className="h-[180px] w-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
-                        />
-                      </figure>
-                    ) : null}
-
-                    {post.company ? (
-                      <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] opacity-50">
-                        {post.company}
-                      </p>
-                    ) : null}
-
-                    <h3 className="max-w-xl text-2xl font-semibold tracking-[-0.02em] text-balance">
-                      {post.title}
-                    </h3>
-
-                    {post.dek ? (
-                      <p className="mt-3 max-w-xl text-[17px] leading-7 opacity-72">
-                        {post.dek}
-                      </p>
-                    ) : null}
-
-                    {post.publishedAt ? (
-                      <p className="mt-3 text-sm opacity-45">
-                        {formatDate(post.publishedAt)}
-                      </p>
-                    ) : null}
-                  </Link>
-                </article>
-              ))}
+          {feedItems.length ? (
+            <div className="space-y-16">
+              {feedItems.map((item, index) =>
+                item.type === "post" ? (
+                  <PostCard
+                    key={`post-${item.data._id || index}`}
+                    post={item.data}
+                  />
+                ) : (
+                  <SquibCard
+                    key={`squib-${item.data._id || index}`}
+                    squib={item.data}
+                  />
+                )
+              )}
             </div>
           ) : (
             <div className="max-w-xl">

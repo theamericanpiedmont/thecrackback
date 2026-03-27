@@ -46,10 +46,6 @@ export const blockContentType = defineType({
     }),
 
     defineArrayMember({
-      type: "artifactEmbed",
-    }),
-
-    defineArrayMember({
       type: "sidenote",
     }),
 

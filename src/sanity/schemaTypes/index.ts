@@ -7,20 +7,12 @@ import { sectionType } from "./sectionType"
 import { blockContentType } from "./blockContentType"
 import { sectionBreak } from "./sectionBreak"
 
-import { essayType } from "./essayType"
-import { fieldNoteType } from "./fieldNoteType"
-import { marginaliaType } from "./marginaliaType"
-import { marginaliaSignalType } from "./marginaliaSignalType"
-import { artifactType } from "./artifactType"
-import { signalRunType } from "./signalRun"
-
-// New types
 import { pullQuoteType } from "./pullQuoteType"
-import { artifactEmbedType } from "./artifactEmbedType"
 import { storyImageType } from "./storyImageType"
 import { galleryType } from "./galleryType"
 import { sidenoteType } from "./sidenoteType"
 import { crackbackPostType } from "./crackbackPost"
+import { squibType } from "./squibType"
 
 const typePairs: Array<{ key: string; val: SchemaTypeDefinition | undefined }> = [
   { key: "authorType", val: authorType },
@@ -31,17 +23,10 @@ const typePairs: Array<{ key: string; val: SchemaTypeDefinition | undefined }> =
   // Register sectionBreak early since blockContent uses it
   { key: "sectionBreak", val: sectionBreak },
 
-  { key: "essayType", val: essayType },
-  { key: "signalRunType", val: signalRunType },
-  { key: "fieldNoteType", val: fieldNoteType },
-  { key: "artifactType", val: artifactType },
-  { key: "marginaliaType", val: marginaliaType },
-  { key: "marginaliaSignalType", val: marginaliaSignalType },
   { key: "crackbackPostType", val: crackbackPostType },
-
+  { key: "squibType", val: squibType },
   { key: "sidenoteType", val: sidenoteType },
   { key: "pullQuoteType", val: pullQuoteType },
-  { key: "artifactEmbedType", val: artifactEmbedType },
   { key: "storyImageType", val: storyImageType },
   { key: "galleryType", val: galleryType },
 ]
