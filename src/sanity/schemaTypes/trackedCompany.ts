@@ -79,7 +79,17 @@ export const trackedCompany = defineType({
       name: 'primaryAngle',
       title: 'Primary Angle',
       type: 'string',
-      description: 'Examples: licensing, subscriptions, platform, pricing power, retail flywheel',
+      description:
+        'Examples: licensing, subscriptions, platform, pricing power, retail flywheel',
+    }),
+    defineField({
+      name: 'squibTriggers',
+      title: 'Squib Triggers',
+      type: 'array',
+      of: [{type: 'string'}],
+      options: {layout: 'tags'},
+      description:
+        'Keywords the miner should hunt for, e.g. Magic revenue, Secret Lair, Universes Beyond, licensing',
     }),
     defineField({
       name: 'whyItMatters',
@@ -134,7 +144,10 @@ export const trackedCompany = defineType({
     {
       title: 'Priority',
       name: 'priorityDesc',
-      by: [{field: 'crackbackPriority', direction: 'asc'}, {field: 'name', direction: 'asc'}],
+      by: [
+        {field: 'crackbackPriority', direction: 'asc'},
+        {field: 'name', direction: 'asc'},
+      ],
     },
     {
       title: 'Next earnings',

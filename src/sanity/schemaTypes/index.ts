@@ -17,6 +17,7 @@ import { squibType } from "./squibType"
 // Crackback Watchlist
 import { trackedCompany } from "./trackedCompany"
 import { watchlistSettings } from "./watchlistSettings"
+import { signalCandidate } from "./signalCandidate"
 // End Crackback Watchlist
 
 const typePairs: Array<{ key: string; val: SchemaTypeDefinition | undefined }> = [
@@ -38,6 +39,7 @@ const typePairs: Array<{ key: string; val: SchemaTypeDefinition | undefined }> =
   // Crackback Watchlist
   { key: "trackedCompany", val: trackedCompany },
   { key: "watchlistSettings", val: watchlistSettings },
+  { key: "signalCandidate", val: signalCandidate },
 ]
 
 // ---- TEMP DEBUG: make schema errors readable ----

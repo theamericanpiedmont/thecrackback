@@ -2,6 +2,7 @@
 import type { StructureResolver } from "sanity/structure"
 import AutomationPane from "@/sanity/components/AutomationPane"
 import EarningsRadarPane from "@/sanity/components/EarningsRadarPane"
+import SignalMinerPane from "@/sanity/components/SignalMinerPane"
 
 export const structure: StructureResolver = (S) =>
   S.list()
@@ -19,6 +20,13 @@ export const structure: StructureResolver = (S) =>
         .schemaType("squib")
         .child(
           S.documentTypeList("squib").title("Squibs")
+        ),
+
+      S.listItem()
+        .title("Signal Candidates")
+        .schemaType("signalCandidate")
+        .child(
+          S.documentTypeList("signalCandidate").title("Signal Candidates")
         ),
 
       S.divider(),
@@ -51,10 +59,16 @@ export const structure: StructureResolver = (S) =>
       S.divider(),
 
       S.listItem()
-  .title("Earnings Radar")
-  .child(
-    S.component(EarningsRadarPane).title("Earnings Radar")
-  ),
+        .title("Earnings Radar")
+        .child(
+          S.component(EarningsRadarPane).title("Earnings Radar")
+        ),
+
+      S.listItem()
+        .title("Signal Miner")
+        .child(
+          S.component(SignalMinerPane).title("Signal Miner")
+        ),
 
       S.listItem()
         .title("Automation")
