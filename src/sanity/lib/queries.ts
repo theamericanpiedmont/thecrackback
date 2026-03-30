@@ -158,3 +158,55 @@ export const crackbackSignalsQuery = /* groq */ `
   "companyTicker": company->ticker
 }
 `
+
+export const crackbackSignalsIndexQuery = /* groq */ `
+*[
+  _type == "signalCandidate" &&
+  status == "published" &&
+  defined(slug.current) &&
+  !(_id in path("drafts.**"))
+] | order(coalesce(publishedAt, createdFromMinerAt, _createdAt) desc)[0...100]{
+  _id,
+  "title": coalesce(suggestedHeadline, title),
+  "slug": slug.current,
+  "summary": coalesce(theCrackback, whyItMatters, signal),
+  signal,
+  whyItMatters,
+  theCrackback,
+  statOrQuote,
+  sourceType,
+  sourceTitle,
+  sourceUrl,
+  publishedAt,
+  createdFromMinerAt,
+  publishScore,
+  "company": company->name,
+  "companyTicker": company->ticker
+}
+`
+export const crackbackSignalBySlugQuery = /* groq */ `
+*[
+  _type == "signalCandidate" &&
+  status == "published" &&
+  defined(slug.current) &&
+  slug.current == $slug &&
+  !(_id in path("drafts.**"))
+][0]{
+  _id,
+  title,
+  suggestedHeadline,
+  "slug": slug.current,
+  signal,
+  whyItMatters,
+  theCrackback,
+  statOrQuote,
+  sourceType,
+  sourceTitle,
+  sourceUrl,
+  publishedAt,
+  createdFromMinerAt,
+  publishScore,
+  "company": company->name,
+  "companyTicker": company->ticker
+}
+`
