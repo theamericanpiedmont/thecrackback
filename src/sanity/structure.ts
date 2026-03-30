@@ -1,6 +1,7 @@
 // src/sanity/structure.ts
 import type { StructureResolver } from "sanity/structure"
 import AutomationPane from "@/sanity/components/AutomationPane"
+import EarningsRadarPane from "@/sanity/components/EarningsRadarPane"
 
 export const structure: StructureResolver = (S) =>
   S.list()
@@ -21,6 +22,39 @@ export const structure: StructureResolver = (S) =>
         ),
 
       S.divider(),
+
+      S.listItem()
+        .title("Crackback Watchlist")
+        .child(
+          S.list()
+            .title("Crackback Watchlist")
+            .items([
+              S.listItem()
+                .title("Tracked Companies")
+                .schemaType("trackedCompany")
+                .child(
+                  S.documentTypeList("trackedCompany").title("Tracked Companies")
+                ),
+
+              S.listItem()
+                .title("Watchlist Settings")
+                .schemaType("watchlistSettings")
+                .child(
+                  S.document()
+                    .schemaType("watchlistSettings")
+                    .documentId("watchlistSettings")
+                    .title("Watchlist Settings")
+                ),
+            ])
+        ),
+
+      S.divider(),
+
+      S.listItem()
+  .title("Earnings Radar")
+  .child(
+    S.component(EarningsRadarPane).title("Earnings Radar")
+  ),
 
       S.listItem()
         .title("Automation")

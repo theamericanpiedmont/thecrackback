@@ -14,6 +14,11 @@ import { sidenoteType } from "./sidenoteType"
 import { crackbackPostType } from "./crackbackPost"
 import { squibType } from "./squibType"
 
+// Crackback Watchlist
+import { trackedCompany } from "./trackedCompany"
+import { watchlistSettings } from "./watchlistSettings"
+// End Crackback Watchlist
+
 const typePairs: Array<{ key: string; val: SchemaTypeDefinition | undefined }> = [
   { key: "authorType", val: authorType },
   { key: "sectionType", val: sectionType },
@@ -29,6 +34,10 @@ const typePairs: Array<{ key: string; val: SchemaTypeDefinition | undefined }> =
   { key: "pullQuoteType", val: pullQuoteType },
   { key: "storyImageType", val: storyImageType },
   { key: "galleryType", val: galleryType },
+
+  // Crackback Watchlist
+  { key: "trackedCompany", val: trackedCompany },
+  { key: "watchlistSettings", val: watchlistSettings },
 ]
 
 // ---- TEMP DEBUG: make schema errors readable ----
