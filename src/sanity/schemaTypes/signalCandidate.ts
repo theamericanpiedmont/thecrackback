@@ -12,6 +12,26 @@ export const signalCandidate = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      options: {
+        source: 'title',
+        maxLength: 96,
+      },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'publishedAt',
+      title: 'Published At',
+      type: 'datetime',
+    }),
+    defineField({
+      name: 'publishScore',
+      title: 'Publish Score',
+      type: 'number',
+    }),
+    defineField({
       name: 'company',
       title: 'Company',
       type: 'reference',
@@ -82,6 +102,7 @@ export const signalCandidate = defineType({
         list: [
           {title: 'Suggested', value: 'suggested'},
           {title: 'Approved', value: 'approved'},
+          {title: 'Published', value: 'published'},
           {title: 'Rejected', value: 'rejected'},
         ],
         layout: 'radio',

@@ -134,3 +134,27 @@ export const squibsQuery = /* groq */ `
   socialHandle
 }
 `
+
+export const crackbackSignalsQuery = /* groq */ `
+*[
+  _type == "signalCandidate" &&
+  status == "published" &&
+  !(_id in path("drafts.**"))
+] | order(coalesce(publishedAt, createdFromMinerAt, _createdAt) desc)[0...4]{
+  _id,
+  "title": coalesce(suggestedHeadline, title),
+  "slug": slug.current,
+  "summary": coalesce(theCrackback, whyItMatters, signal),
+  signal,
+  whyItMatters,
+  theCrackback,
+  statOrQuote,
+  sourceType,
+  sourceTitle,
+  sourceUrl,
+  publishedAt,
+  createdFromMinerAt,
+  "company": company->name,
+  "companyTicker": company->ticker
+}
+`

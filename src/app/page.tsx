@@ -2,7 +2,7 @@ import Link from "next/link"
 import imageUrlBuilder from "@sanity/image-url"
 import Masthead from "@/components/Masthead"
 import { client } from "@/sanity/lib/client"
-import { crackbackHomeQuery } from "@/sanity/lib/queries"
+import { crackbackHomeQuery, crackbackSignalsQuery } from "@/sanity/lib/queries"
 
 export const dynamic = "force-dynamic"
 
@@ -19,6 +19,34 @@ function formatDate(date?: string) {
     month: "long",
     day: "numeric",
   })
+}
+
+function getSignalTicker(signal: any) {
+  const raw =
+    signal?.companyTicker ||
+    signal?.company ||
+    signal?.sourceName ||
+    signal?.title ||
+    "SIG"
+
+  const cleaned = String(raw)
+    .replace(/[^A-Za-z0-9 ]/g, "")
+    .trim()
+
+  if (!cleaned) return "SIG"
+
+  const words = cleaned.split(/\s+/).filter(Boolean)
+
+  if (words.length === 1) {
+    return words[0].slice(0, 4).toUpperCase()
+  }
+
+  return words
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 4)
+    .toUpperCase()
 }
 
 function LockedCard({
@@ -54,7 +82,6 @@ function SquibCard({ squib }: { squib: any }) {
   return (
     <article className="mx-auto max-w-md py-4 text-center">
       <Link href={`/squibs/${squib.slug}`} className="block">
-        
         <div className="text-[10px] font-semibold uppercase tracking-[0.2em] opacity-40">
           Squib
         </div>
@@ -123,7 +150,6 @@ function SquibCard({ squib }: { squib: any }) {
   )
 }
 
-
 function PostCard({ post }: { post: any }) {
   return (
     <article className="group">
@@ -180,8 +206,71 @@ function interleavePostsAndSquibs(posts: any[], squibs: any[]) {
   return items
 }
 
+function SignalsRail({ signals }: { signals: any[] }) {
+  if (!signals?.length) return null
+
+  return (
+    <aside className="border-t border-black/10 pt-6 dark:border-white/10">
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <h2 className="text-sm font-semibold uppercase tracking-[0.18em] opacity-60">
+          Signals Today
+        </h2>
+
+        <Link
+          href="/signals"
+          className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.18em] opacity-45 transition-opacity hover:opacity-100"
+        >
+          All →
+        </Link>
+      </div>
+
+      <div className="space-y-4">
+        {signals.map((signal: any) => {
+          const ticker = getSignalTicker(signal)
+
+          return (
+            <article
+              key={signal._id}
+              className="border-t border-black/10 pt-4 dark:border-white/10"
+            >
+              <Link
+                href={`/signals/${signal.slug?.current || signal.slug}`}
+                className="block transition-opacity hover:opacity-85"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/15 text-[10px] font-semibold uppercase tracking-[0.12em] dark:border-white/15">
+                    {ticker}
+                  </div>
+
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] opacity-38">
+                      {signal.company || signal.sourceName || "Signal"}
+                    </p>
+
+                    <h3 className="mt-1 text-[14px] font-semibold leading-[1.35] tracking-[-0.01em]">
+                      {signal.title}
+                    </h3>
+
+                    {signal.summary ? (
+                      <p className="mt-1 text-[12px] leading-[1.45] opacity-68 line-clamp-2">
+                        <span className="font-semibold">Translation:</span> {signal.summary}
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+              </Link>
+            </article>
+          )
+        })}
+      </div>
+    </aside>
+  )
+}
+
 export default async function HomePage() {
   const data = await client.fetch(crackbackHomeQuery)
+  const signals = await client.fetch(crackbackSignalsQuery)
+
   const lead = data?.latestPost
   const recent = data?.recentPosts || []
   const squibs = data?.squibs || []
@@ -192,48 +281,56 @@ export default async function HomePage() {
       <Masthead />
 
       <div className="mx-auto max-w-6xl px-6 pb-24 pt-10">
-        {lead ? (
-          <section className="mx-auto mb-24 max-w-6xl">
-            <Link
-              href={`/posts/${lead.slug}`}
-              className="block transition-opacity duration-200 hover:opacity-90"
-            >
-              <div className="grid gap-10 md:grid-cols-2 md:items-center">
-                <div>
-                  {lead.company ? (
-                    <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] opacity-50">
-                      {lead.company}
-                    </p>
-                  ) : null}
+        {(lead || signals?.length) ? (
+          <section className="mb-24">
+            <div className="grid gap-12 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-start">
+              <SignalsRail signals={signals} />
 
-                  <h1 className="text-4xl font-semibold leading-[1.05] tracking-[-0.04em] text-balance sm:text-5xl md:text-6xl">
-                    {lead.title}
-                  </h1>
+              {lead ? (
+                <div className="border-t border-black/10 pt-6 dark:border-white/10">
+                  <Link
+                    href={`/posts/${lead.slug}`}
+                    className="block transition-opacity duration-200 hover:opacity-90"
+                  >
+                    <div className="grid gap-10 md:grid-cols-2 md:items-center">
+                      <div>
+                        {lead.company ? (
+                          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] opacity-50">
+                            {lead.company}
+                          </p>
+                        ) : null}
 
-                  {lead.dek ? (
-                    <p className="mt-5 max-w-xl text-lg leading-8 opacity-75 sm:text-xl">
-                      {lead.dek}
-                    </p>
-                  ) : null}
+                        <h1 className="text-4xl font-semibold leading-[1.05] tracking-[-0.04em] text-balance sm:text-5xl md:text-6xl">
+                          {lead.title}
+                        </h1>
 
-                  {lead.publishedAt ? (
-                    <p className="mt-5 text-sm opacity-45">
-                      {formatDate(lead.publishedAt)}
-                    </p>
-                  ) : null}
+                        {lead.dek ? (
+                          <p className="mt-5 max-w-xl text-lg leading-8 opacity-75 sm:text-xl">
+                            {lead.dek}
+                          </p>
+                        ) : null}
+
+                        {lead.publishedAt ? (
+                          <p className="mt-5 text-sm opacity-45">
+                            {formatDate(lead.publishedAt)}
+                          </p>
+                        ) : null}
+                      </div>
+
+                      {lead.coverImage ? (
+                        <figure className="overflow-hidden rounded-sm border border-black/5 dark:border-white/10">
+                          <img
+                            src={urlFor(lead.coverImage).width(1200).height(800).url()}
+                            alt={lead.coverImage?.alt || lead.title || ""}
+                            className="h-[260px] w-full object-cover md:h-[320px]"
+                          />
+                        </figure>
+                      ) : null}
+                    </div>
+                  </Link>
                 </div>
-
-                {lead.coverImage ? (
-                  <figure className="overflow-hidden rounded-sm border border-black/5 dark:border-white/10">
-                    <img
-                      src={urlFor(lead.coverImage).width(1200).height(800).url()}
-                      alt={lead.coverImage?.alt || lead.title || ""}
-                      className="h-[260px] w-full object-cover md:h-[320px]"
-                    />
-                  </figure>
-                ) : null}
-              </div>
-            </Link>
+              ) : null}
+            </div>
           </section>
         ) : null}
 

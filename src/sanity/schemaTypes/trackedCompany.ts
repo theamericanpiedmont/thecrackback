@@ -128,12 +128,22 @@ export const trackedCompany = defineType({
       title: 'Last Covered At',
       type: 'datetime',
     }),
+
+defineField({
+  name: 'lastMinedAt',
+  title: 'Last Mined At',
+  type: 'datetime',
+}),
+
     defineField({
       name: 'notes',
       title: 'Notes',
       type: 'text',
       rows: 5,
     }),
+
+    
+
   ],
   orderings: [
     {
