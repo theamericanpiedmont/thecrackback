@@ -9,8 +9,24 @@ export default function Masthead() {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
+    let ticking = false
+
     const onScroll = () => {
-      setScrolled(window.scrollY > 24)
+      if (ticking) return
+
+      window.requestAnimationFrame(() => {
+        const y = window.scrollY
+
+        setScrolled((prev) => {
+          if (!prev && y > 40) return true
+          if (prev && y < 16) return false
+          return prev
+        })
+
+        ticking = false
+      })
+
+      ticking = true
     }
 
     onScroll()
@@ -20,18 +36,14 @@ export default function Masthead() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-black/10 bg-[var(--site-bg)]/80 backdrop-blur-md dark:border-white/10">
-      <div
-        className={`mx-auto flex max-w-6xl items-center justify-between px-6 transition-all duration-300 ${
-          scrolled ? "py-3" : "py-6"
-        }`}
-      >
-        <Link href="/" className="flex items-center shrink-0">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <Link href="/" className="flex shrink-0 items-center">
           <div className="block dark:hidden opacity-95">
             <img
               src="/masthead-light_trans.png"
               alt="The Crackback"
-              className={`block w-auto transition-all duration-300 ${
-                scrolled ? "h-[58px]" : "h-[112px]"
+              className={`block w-auto origin-left transition-all duration-300 ease-out ${
+                scrolled ? "h-[62px]" : "h-[88px]"
               }`}
             />
           </div>
@@ -40,15 +52,19 @@ export default function Masthead() {
             <img
               src="/masthead-light_trans.png"
               alt="The Crackback"
-              className={`block w-auto transition-all duration-300 ${
-                scrolled ? "h-[58px]" : "h-[112px]"
+              className={`block w-auto origin-left transition-all duration-300 ease-out ${
+                scrolled ? "h-[62px]" : "h-[88px]"
               }`}
             />
           </div>
         </Link>
 
         <div className="flex items-center gap-5">
-          <nav className="flex items-center gap-5 text-[11px] uppercase tracking-[0.22em] opacity-70">
+          <nav
+            className={`flex items-center gap-5 text-[11px] uppercase tracking-[0.22em] transition-all duration-300 ${
+              scrolled ? "opacity-75" : "opacity-70"
+            }`}
+          >
             <Link href="/" className="transition hover:opacity-100">
               Home
             </Link>

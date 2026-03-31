@@ -1,20 +1,21 @@
-// sanity/lib/queries.ts
+// file: sanity/lib/queries.ts
 
 export const crackbackHomeQuery = /* groq */ `
 {
-  "latestPost": *[
-    _type == "crackbackPost" &&
+  "latestCrackback": *[
+    _type == "crackback" &&
     defined(slug.current) &&
     defined(publishedAt) &&
     !(_id in path("drafts.**"))
-  ] | order(publishedAt desc)[0]{
+  ] | order(coalesce(number, 0) desc, publishedAt desc)[0]{
     _id,
     title,
+    number,
     "slug": slug.current,
     publishedAt,
     dek,
     company,
-    coverImage
+    heroImage
   },
 
   "recentPosts": *[
@@ -22,7 +23,7 @@ export const crackbackHomeQuery = /* groq */ `
     defined(slug.current) &&
     defined(publishedAt) &&
     !(_id in path("drafts.**"))
-  ] | order(publishedAt desc)[1...10]{
+  ] | order(publishedAt desc)[0...10]{
     _id,
     title,
     "slug": slug.current,
@@ -78,6 +79,47 @@ export const squibBySlugQuery = /* groq */ `
 }
 `
 
+export const crackbacksIndexQuery = /* groq */ `
+*[
+  _type == "crackback" &&
+  defined(slug.current) &&
+  defined(publishedAt) &&
+  !(_id in path("drafts.**"))
+] | order(coalesce(number, 0) desc, publishedAt desc)[0...50]{
+  _id,
+  title,
+  number,
+  "slug": slug.current,
+  publishedAt,
+  dek,
+  company,
+  heroImage
+}
+`
+
+// file: sanity/lib/queries.ts
+export const crackbackBySlugQuery = /* groq */ `
+*[
+  _type == "crackback" &&
+  defined(slug.current) &&
+  slug.current == $slug &&
+  !(_id in path("drafts.**"))
+][0]{
+  _id,
+  title,
+  number,
+  "slug": slug.current,
+  publishedAt,
+  dek,
+  company,
+  heroImage,
+  body,
+  author->{
+    name
+  }
+}
+`
+
 export const crackbackPostsIndexQuery = /* groq */ `
 *[
   _type == "crackbackPost" &&
@@ -123,6 +165,7 @@ export const squibsQuery = /* groq */ `
   _id,
   title,
   "slug": slug.current,
+  publishedAt,
   squibType,
   summary,
   sourceUrl,
@@ -139,8 +182,9 @@ export const crackbackSignalsQuery = /* groq */ `
 *[
   _type == "signalCandidate" &&
   status == "published" &&
+  defined(slug.current) &&
   !(_id in path("drafts.**"))
-] | order(coalesce(publishedAt, createdFromMinerAt, _createdAt) desc)[0...4]{
+] | order(coalesce(publishedAt, createdFromMinerAt, _createdAt) desc)[0...6]{
   _id,
   "title": coalesce(suggestedHeadline, title),
   "slug": slug.current,
@@ -184,6 +228,7 @@ export const crackbackSignalsIndexQuery = /* groq */ `
   "companyTicker": company->ticker
 }
 `
+
 export const crackbackSignalBySlugQuery = /* groq */ `
 *[
   _type == "signalCandidate" &&

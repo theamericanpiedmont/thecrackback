@@ -12,6 +12,7 @@ import { storyImageType } from "./storyImageType"
 import { galleryType } from "./galleryType"
 import { sidenoteType } from "./sidenoteType"
 import { crackbackPostType } from "./crackbackPost"
+import crackback from "./crackback"
 import { squibType } from "./squibType"
 
 // Crackback Watchlist
@@ -28,7 +29,7 @@ const typePairs: Array<{ key: string; val: SchemaTypeDefinition | undefined }> =
 
   // Register sectionBreak early since blockContent uses it
   { key: "sectionBreak", val: sectionBreak },
-
+  { key: "crackbackType", val: crackback },
   { key: "crackbackPostType", val: crackbackPostType },
   { key: "squibType", val: squibType },
   { key: "sidenoteType", val: sidenoteType },

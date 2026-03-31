@@ -22,6 +22,11 @@ function formatDate(date?: string) {
   })
 }
 
+function formatCrackbackNumber(num?: number) {
+  if (!num) return "Crackback"
+  return `Crackback #${String(num).padStart(3, "0")}`
+}
+
 function getSignalTicker(signal: any) {
   const raw =
     signal?.companyTicker ||
@@ -79,17 +84,67 @@ function LockedCard({
   )
 }
 
+function ThoughtDrip({ squib }: { squib: any }) {
+  if (!squib) return null
+
+  const byline =
+    squib.squibType === "social"
+      ? squib.socialPlatform
+        ? `${squib.socialPlatform.charAt(0).toUpperCase()}${squib.socialPlatform.slice(1)}${
+            squib.socialHandle ? ` · ${squib.socialHandle}` : ""
+          }`
+        : squib.socialHandle || ""
+      : squib.attribution || squib.sourceName || ""
+
+  return (
+    <article className="pt-2">
+      <Link
+        href={`/squibs/${squib.slug}`}
+        className="block transition-opacity duration-200 hover:opacity-90"
+      >
+        <div className="mx-auto max-w-[32rem] text-center">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.24em] opacity-36">
+            Thought
+          </div>
+
+          {squib.squibType === "quote" && squib.quoteText ? (
+            <blockquote className="mt-3 text-[1.35rem] font-semibold leading-[1.14] tracking-[-0.02em] text-balance sm:text-[1.55rem]">
+              “{squib.quoteText}”
+            </blockquote>
+          ) : (
+            <>
+              <h3 className="mt-3 text-[1.2rem] font-semibold leading-[1.15] tracking-[-0.02em] text-balance">
+                {squib.title}
+              </h3>
+
+              {squib.summary ? (
+                <p className="mx-auto mt-3 max-w-[30rem] text-[0.96rem] leading-[1.65] opacity-70">
+                  {squib.summary}
+                </p>
+              ) : null}
+            </>
+          )}
+
+          {byline ? (
+            <p className="mt-3 text-xs opacity-46">— {byline}</p>
+          ) : null}
+        </div>
+      </Link>
+    </article>
+  )
+}
+
 function SquibCard({ squib }: { squib: any }) {
   return (
     <article className="mx-auto max-w-2xl py-1 text-center">
       <Link href={`/squibs/${squib.slug}`} className="block">
         <div className="text-[10px] font-semibold uppercase tracking-[0.22em] opacity-38">
-          Squib
+          Thought
         </div>
 
         {squib.squibType === "quote" && squib.quoteText ? (
           <>
-            <blockquote className="mt-2 text-[1.7rem] font-semibold leading-[1.12] tracking-[-0.025em] text-balance sm:text-[1.85rem]">
+            <blockquote className="mt-2 text-[1.55rem] font-semibold leading-[1.14] tracking-[-0.022em] text-balance sm:text-[1.7rem]">
               “{squib.quoteText}”
             </blockquote>
 
@@ -107,24 +162,24 @@ function SquibCard({ squib }: { squib: any }) {
               />
             </figure>
 
-            <h3 className="mt-3 text-xl font-semibold leading-[1.1] tracking-[-0.02em] text-balance">
+            <h3 className="mt-3 text-[1.35rem] font-semibold leading-[1.12] tracking-[-0.02em] text-balance">
               {squib.title}
             </h3>
 
             {squib.summary ? (
-              <p className="mt-2 text-sm leading-6 opacity-70">
+              <p className="mx-auto mt-2 max-w-[34rem] text-[0.96rem] leading-7 opacity-70">
                 {squib.summary}
               </p>
             ) : null}
           </>
         ) : (
           <>
-            <h3 className="mt-3 text-xl font-semibold leading-[1.1] tracking-[-0.02em] text-balance">
+            <h3 className="mt-3 text-[1.35rem] font-semibold leading-[1.12] tracking-[-0.02em] text-balance">
               {squib.title}
             </h3>
 
             {squib.summary ? (
-              <p className="mt-2 text-sm leading-6 opacity-70">
+              <p className="mx-auto mt-2 max-w-[34rem] text-[0.96rem] leading-7 opacity-70">
                 {squib.summary}
               </p>
             ) : null}
@@ -152,34 +207,42 @@ function PostCard({ post }: { post: any }) {
     <article className="group">
       <Link href={`/posts/${post.slug}`} className="block">
         {post.coverImage ? (
-          <figure className="mb-4 overflow-hidden rounded-sm">
+          <figure className="mb-5 overflow-hidden rounded-sm">
             <img
-              src={urlFor(post.coverImage).width(1000).height(620).url()}
+              src={urlFor(post.coverImage).width(1400).height(620).url()}
               alt={post.coverImage?.alt || post.title || ""}
-              className="h-[180px] w-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
+              className="h-[180px] w-full object-cover transition-transform duration-300 group-hover:scale-[1.01] sm:h-[220px]"
             />
           </figure>
         ) : null}
 
-        {post.company ? (
-          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] opacity-50">
-            {post.company}
-          </p>
-        ) : null}
+        <div className="max-w-[52rem]">
+          <div className="mb-2 flex items-center gap-3">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] opacity-38">
+              Post
+            </span>
 
-        <h3 className="max-w-3xl text-[2rem] font-semibold leading-[1.03] tracking-[-0.025em] text-balance">
-          {post.title}
-        </h3>
+            {post.company ? (
+              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] opacity-50">
+                {post.company}
+              </span>
+            ) : null}
+          </div>
 
-        {post.dek ? (
-          <p className="mt-3 max-w-2xl text-[16px] leading-7 opacity-72">
-            {post.dek}
-          </p>
-        ) : null}
+          <h3 className="text-[2.15rem] font-semibold leading-[1.02] tracking-[-0.028em] text-balance">
+            {post.title}
+          </h3>
 
-        {post.publishedAt ? (
-          <p className="mt-3 text-sm opacity-45">{formatDate(post.publishedAt)}</p>
-        ) : null}
+          {post.dek ? (
+            <p className="mt-4 max-w-[44rem] text-[1.05rem] leading-[1.7] opacity-72">
+              {post.dek}
+            </p>
+          ) : null}
+
+          {post.publishedAt ? (
+            <p className="mt-4 text-sm opacity-45">{formatDate(post.publishedAt)}</p>
+          ) : null}
+        </div>
       </Link>
     </article>
   )
@@ -194,33 +257,39 @@ function interleavePostsAndSquibs(posts: any[], squibs: any[]) {
   const max = Math.max(posts.length, squibs.length)
 
   for (let i = 0; i < max; i++) {
-    if (squibs[i]) items.push({ type: "squib", data: squibs[i] })
     if (posts[i]) items.push({ type: "post", data: posts[i] })
+    if (squibs[i]) items.push({ type: "squib", data: squibs[i] })
   }
 
   return items
 }
 
-function SignalsRail({ signals }: { signals: any[] }) {
+function RadarRail({ signals }: { signals: any[] }) {
   if (!signals?.length) return null
 
   return (
-    <aside className="border-t border-black/10 pt-6 dark:border-white/10">
-      <div className="mb-5 flex items-center justify-between gap-4">
-        <h2 className="text-[0.95rem] font-semibold uppercase tracking-[0.2em] opacity-58">
-          Signals Today
-        </h2>
+    <aside className="pt-1">
+      <div className="mb-5">
+        <div className="text-[10px] font-semibold uppercase tracking-[0.24em] opacity-34">
+          Notice. Think. Explore. Prove.
+        </div>
 
-        <Link
-          href="/signals"
-          className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.18em] opacity-45 transition-opacity hover:opacity-100"
-        >
-          All →
-        </Link>
+        <div className="mt-3 flex items-center justify-between gap-4">
+          <h2 className="text-[0.95rem] font-semibold uppercase tracking-[0.2em] opacity-58">
+            Radar
+          </h2>
+
+          <Link
+            href="/signals"
+            className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.18em] opacity-45 transition-opacity hover:opacity-100"
+          >
+            All →
+          </Link>
+        </div>
       </div>
 
       <div className="space-y-4">
-        {signals.map((signal: any) => {
+        {signals.slice(0, 6).map((signal: any) => {
           const ticker = getSignalTicker(signal)
 
           return (
@@ -267,10 +336,17 @@ export default async function HomePage() {
   const data = await client.fetch(crackbackHomeQuery)
   const signals = await client.fetch(crackbackSignalsQuery)
 
-  const lead = data?.latestPost
+  const lead = data?.latestCrackback
   const recent = data?.recentPosts || []
   const squibs = data?.squibs || []
-  const feedItems = interleavePostsAndSquibs(recent, squibs)
+
+  const latestThought = squibs[0] || null
+  const remainingSquibs = squibs.slice(1)
+
+  const featuredPost = recent[0] || null
+  const remainingPosts = recent.slice(1)
+
+  const feedItems = interleavePostsAndSquibs(remainingPosts, remainingSquibs)
 
   return (
     <main className="min-h-screen">
@@ -278,54 +354,70 @@ export default async function HomePage() {
 
       <div className="mx-auto max-w-6xl px-6 pb-20 pt-10">
         {(lead || signals?.length) ? (
-          <section className="mb-16">
+          <section className="mb-14">
             <div className="grid gap-12 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start lg:gap-14">
-              <SignalsRail signals={signals} />
+              <RadarRail signals={signals} />
 
-              {lead ? (
-                <div className="border-t border-black/10 pt-6 dark:border-white/10">
-                  <Link
-                    href={`/posts/${lead.slug}`}
-                    className="block transition-opacity duration-200 hover:opacity-92"
-                  >
-                    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(340px,0.88fr)] lg:items-center lg:gap-10">
-                      <div className="max-w-[40rem]">
-                        {lead.company ? (
-                          <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.24em] opacity-48">
-                            {lead.company}
-                          </p>
-                        ) : null}
+              <div className="space-y-8">
+                {lead ? (
+                  <div>
+                    <Link
+                      href={`/crackbacks/${lead.slug}`}
+                      className="block transition-opacity duration-200 hover:opacity-92"
+                    >
+                      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(340px,0.88fr)] lg:items-center lg:gap-10">
+                        <div className="max-w-[40rem]">
+                          <div className="mb-4 flex items-center gap-3">
+                            <span className="text-[10px] font-semibold uppercase tracking-[0.24em] opacity-38">
+                              {formatCrackbackNumber(lead.number)}
+                            </span>
 
-                        <h1 className="max-w-[13ch] text-[clamp(2.2rem,3.6vw,3.3rem)] font-semibold leading-[1] tracking-[-0.025em] text-balance">
-                          {lead.title}
-                        </h1>
+                            {lead.company ? (
+                              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] opacity-50">
+                                {lead.company}
+                              </span>
+                            ) : null}
+                          </div>
 
-                        {lead.dek ? (
-                          <p className="mt-4 max-w-[30rem] text-[0.98rem] leading-[1.6] opacity-72">
-                            {lead.dek}
-                          </p>
-                        ) : null}
+                          <h1 className="max-w-[13ch] text-[clamp(2.2rem,3.6vw,3.3rem)] font-semibold leading-[1] tracking-[-0.025em] text-balance">
+                            {lead.title}
+                          </h1>
 
-                        {lead.publishedAt ? (
-                          <p className="mt-4 text-sm opacity-42">
-                            {formatDate(lead.publishedAt)}
-                          </p>
+                          {lead.dek ? (
+                            <p className="mt-4 max-w-[30rem] text-[0.98rem] leading-[1.6] opacity-72">
+                              {lead.dek}
+                            </p>
+                          ) : null}
+
+                          {lead.publishedAt ? (
+                            <p className="mt-4 text-sm opacity-42">
+                              {formatDate(lead.publishedAt)}
+                            </p>
+                          ) : null}
+                        </div>
+
+                        {lead.heroImage ? (
+                          <figure className="overflow-hidden rounded-sm border border-black/5 dark:border-white/10">
+                            <img
+                              src={urlFor(lead.heroImage).width(1400).height(980).url()}
+                              alt={lead.heroImage?.alt || lead.title || ""}
+                              className="h-[260px] w-full object-cover sm:h-[300px] lg:h-[320px]"
+                            />
+                          </figure>
                         ) : null}
                       </div>
+                    </Link>
+                  </div>
+                ) : null}
 
-                      {lead.coverImage ? (
-                        <figure className="overflow-hidden rounded-sm border border-black/5 dark:border-white/10">
-                          <img
-                            src={urlFor(lead.coverImage).width(1400).height(980).url()}
-                            alt={lead.coverImage?.alt || lead.title || ""}
-                            className="h-[260px] w-full object-cover sm:h-[300px] lg:h-[320px]"
-                          />
-                        </figure>
-                      ) : null}
-                    </div>
-                  </Link>
-                </div>
-              ) : null}
+                {latestThought ? <ThoughtDrip squib={latestThought} /> : null}
+
+{featuredPost ? (
+  <div className="pt-6">
+    <PostCard post={featuredPost} />
+  </div>
+) : null}
+              </div>
             </div>
           </section>
         ) : null}

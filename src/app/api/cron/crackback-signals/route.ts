@@ -549,11 +549,17 @@ async function createSignalCandidate(
   })
 }
 
+// file: src/app/api/cron/crackback-signals/route.ts
 export async function GET(req: NextRequest) {
   const key = (req.nextUrl.searchParams.get("key") || "").trim()
   const secret = (process.env.CRON_SECRET || "").trim()
+  const authHeader = (req.headers.get("authorization") || "").trim()
 
-  if (!secret || key !== secret) {
+  const authorized =
+    !!secret &&
+    (key === secret || authHeader === `Bearer ${secret}`)
+
+  if (!authorized) {
     return unauthorized()
   }
 

@@ -1,4 +1,4 @@
-// src/sanity/structure.ts
+// file: src/sanity/structure.ts
 import type { StructureResolver } from "sanity/structure"
 import AutomationPane from "@/sanity/components/AutomationPane"
 import EarningsRadarPane from "@/sanity/components/EarningsRadarPane"
@@ -9,24 +9,39 @@ export const structure: StructureResolver = (S) =>
     .title("The Crackback")
     .items([
       S.listItem()
+        .title("Crackbacks")
+        .schemaType("crackback")
+        .child(
+          S.documentTypeList("crackback")
+            .title("Crackbacks")
+            .defaultOrdering([{ field: "number", direction: "desc" }])
+        ),
+
+      S.listItem()
         .title("Posts")
         .schemaType("crackbackPost")
         .child(
-          S.documentTypeList("crackbackPost").title("Posts")
+          S.documentTypeList("crackbackPost")
+            .title("Posts")
+            .defaultOrdering([{ field: "publishedAt", direction: "desc" }])
         ),
 
       S.listItem()
         .title("Squibs")
         .schemaType("squib")
         .child(
-          S.documentTypeList("squib").title("Squibs")
+          S.documentTypeList("squib")
+            .title("Squibs")
+            .defaultOrdering([{ field: "publishedAt", direction: "desc" }])
         ),
 
       S.listItem()
         .title("Signal Candidates")
         .schemaType("signalCandidate")
         .child(
-          S.documentTypeList("signalCandidate").title("Signal Candidates")
+          S.documentTypeList("signalCandidate")
+            .title("Signal Candidates")
+            .defaultOrdering([{ field: "publishedAt", direction: "desc" }])
         ),
 
       S.divider(),
