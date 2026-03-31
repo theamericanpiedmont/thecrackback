@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ---------- Theme tokens ---------- */
 :root {
   --site-bg: #f6f4ee;

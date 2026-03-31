@@ -75,6 +75,98 @@ function priorityRank(priority?: string) {
   return 2
 }
 
+function failsHeadlineGuardrail(candidate: Candidate) {
+  const headline = (candidate.suggestedHeadline || candidate.title || "").trim()
+  const lower = headline.toLowerCase()
+
+  if (!headline) return true
+  if (headline.length > 90) return true
+
+  const bannedWords = [
+    "strategy",
+    "initiative",
+    "innovation",
+    "synergy",
+    "growth",
+    "expansion",
+  ]
+
+  if (bannedWords.some((word) => lower.includes(word))) {
+    return true
+  }
+
+  const genericPhrases = [
+    "continues to",
+    "focused on",
+    "highlights",
+    "strong momentum",
+    "long-term value",
+    "platform approach",
+    "driving growth",
+    "expanding ecosystem",
+  ]
+
+  if (genericPhrases.some((phrase) => lower.includes(phrase))) {
+    return true
+  }
+
+  return false
+}
+
+function hasContradictionShape(candidate: Candidate) {
+  const text = [
+    candidate.suggestedHeadline,
+    candidate.theCrackback,
+    candidate.whyItMatters,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase()
+
+  const contradictionSignals = [
+    "but",
+    "without",
+    "instead",
+    "not ",
+    "more than",
+    "less than",
+    "quietly",
+    "even as",
+    "despite",
+    "rather than",
+  ]
+
+  return contradictionSignals.some((phrase) => text.includes(phrase))
+}
+
+function adjustPublishScore(score: ScoreResult, candidate: Candidate): ScoreResult {
+  let adjusted = score.publishScore
+
+  if (hasContradictionShape(candidate)) {
+    adjusted += 5
+  }
+
+  if (failsHeadlineGuardrail(candidate)) {
+    adjusted -= 10
+  }
+
+  if (adjusted > 100) adjusted = 100
+  if (adjusted < 0) adjusted = 0
+
+  const decision: "publish" | "hold" | "reject" =
+    adjusted >= 85
+      ? "publish"
+      : adjusted >= 65
+      ? "hold"
+      : "reject"
+
+  return {
+    ...score,
+    publishScore: adjusted,
+    decision,
+  }
+}
+
 async function getTrackedCompanies(limit = 6): Promise<TrackedCompany[]> {
   const raw = await sanity.fetch(
     `*[
@@ -171,34 +263,63 @@ async function generateCandidates(company: TrackedCompany): Promise<Candidate[]>
   const system = `
 You are the Crackback Signal Miner.
 
-Your job is to turn business source material into short, sharp signal candidates for The Crackback.
+The Crackback identifies hidden business mechanics inside major companies.
 
-Focus on:
-- hidden business engines
-- pricing power
-- licensing
-- platform economics
-- recurring revenue
-- distribution advantages
-- margin expansion
-- ecosystem lock-in
-- surprising executive admissions
+Signals should feel like sharp observations — not summaries.
 
-Output exactly 3 candidate signals.
+Your job is to extract small details that reveal a larger business story.
 
-Each candidate must include:
-- title
-- suggestedHeadline
-- signal
-- statOrQuote
-- whyItMatters
-- theCrackback
+GOOD SIGNALS:
+• highlight a specific behavior, quote, stat, or pattern
+• reveal the real economic engine of the company
+• feel slightly mischievous or skeptical
+• read like a sharp newsroom observation
 
-Rules:
-- suggestedHeadline should be punchy and homepage-ready
-- theCrackback should sound like a sharp interpretation, not PR
-- be concrete, not vague
-- do not sound like investor relations copy
+BAD SIGNALS:
+• generic strategy summaries
+• earnings recap language
+• investor relations phrasing
+• vague statements about growth or innovation
+
+Headlines should be short, punchy, and specific.
+
+GOOD HEADLINE EXAMPLES:
+
+Apple executives said "AI disruption" 17 times but never defined it
+Costco's real moat isn't price. It's parking.
+Netflix quietly built an ad business without calling it one
+Roblox isn't a game company. It's a developer economy
+Uber's biggest innovation might be surge pricing psychology
+
+BAD HEADLINE EXAMPLES:
+
+Company focuses on long-term growth strategy
+Executives highlight strong platform momentum
+Company continues to expand its ecosystem
+
+Each signal must include:
+
+title
+suggestedHeadline
+signal
+statOrQuote
+whyItMatters
+theCrackback
+
+RULES:
+
+• suggestedHeadline should feel like a journalistic observation
+• signal should describe the specific detail
+• statOrQuote should include the concrete quote/stat if available
+• theCrackback should interpret the business mechanics behind it
+• prefer headlines built around contradiction, tension, or a revealing mismatch
+• prefer small details that imply a much bigger story
+
+Write tightly and concretely.
+
+Avoid corporate language.
+Avoid filler.
+Prefer specificity over completeness.
 `
 
   const user = `
@@ -218,6 +339,23 @@ Source text:
 """
 ${source.sourceText}
 """
+
+Headlines must be:
+
+• under 14 words
+• concrete
+• slightly surprising
+• built around a specific observation
+
+Avoid words like:
+strategy
+initiative
+innovation
+synergy
+growth
+expansion
+ecosystem
+platform
 `
 
   const response = await openai.responses.create({
@@ -286,12 +424,20 @@ Reward:
 - business mechanics
 - sharp voice
 - real interpretive value
+- pithy wording
+- small details that imply a bigger business story
+- contradiction, tension, or revealing mismatch
 
 Punish:
 - vagueness
 - generic business-news phrasing
 - investor-relations language
 - weak or obvious observations
+
+Signals with vague headlines should receive very low scores.
+Signals built around a concrete observation should score highly.
+Prefer signals whose headline or interpretation is built around a contradiction, tension, or revealing mismatch.
+Reward pithy wording and small details that imply a bigger business story.
 `
 
   const user = `
@@ -303,6 +449,23 @@ Signal: ${candidate.signal}
 Stat or quote: ${candidate.statOrQuote}
 Why it matters: ${candidate.whyItMatters}
 The Crackback: ${candidate.theCrackback}
+
+Headlines must be:
+
+• under 14 words
+• concrete
+• slightly surprising
+• built around a specific observation
+
+Avoid words like:
+strategy
+initiative
+innovation
+synergy
+growth
+expansion
+ecosystem
+platform
 `
 
   const response = await openai.responses.create({
@@ -395,14 +558,29 @@ export async function GET(req: NextRequest) {
   }
 
   const companies = await getTrackedCompanies(6)
-  const results = []
+
+  type ScoredCandidate = {
+    company: TrackedCompany
+    source: Awaited<ReturnType<typeof getSourceForCompany>>
+    candidate: Candidate
+    score: ScoreResult
+  }
+
+  const allScored: ScoredCandidate[] = []
+  const results: Array<{
+    company: string
+    generated: number
+    skippedDuplicates: number
+    published: number
+    approved: number
+    rejected: number
+  }> = []
 
   for (const company of companies) {
     const source = await getSourceForCompany(company)
     const candidates = await generateCandidates(company)
 
-    let created = 0
-    let published = 0
+    let generated = 0
     let skippedDuplicates = 0
 
     for (const candidate of candidates) {
@@ -412,45 +590,116 @@ export async function GET(req: NextRequest) {
         continue
       }
 
-      const score = await scoreCandidate(company, candidate)
+      const rawScore = await scoreCandidate(company, candidate)
+      const score = adjustPublishScore(rawScore, candidate)
 
-      let status: "suggested" | "approved" | "published" | "rejected" = "suggested"
-
-      if (score.decision === "publish" && score.publishScore >= 80) {
-        status = "published"
-      } else if (score.decision === "hold" && score.publishScore >= 65) {
-        status = "approved"
-      } else if (score.decision === "reject" || score.publishScore < 50) {
-        status = "rejected"
+      if (failsHeadlineGuardrail(candidate) && score.publishScore < 65) {
+        allScored.push({
+          company,
+          source,
+          candidate,
+          score: {
+            ...score,
+            decision: "reject",
+            reason: "Headline failed guardrail and did not clear quality threshold.",
+          },
+        })
+      } else {
+        allScored.push({
+          company,
+          source,
+          candidate,
+          score,
+        })
       }
 
-      await createSignalCandidate(company, candidate, source, status, score.publishScore)
-      created += 1
-
-      if (status === "published") {
-        published += 1
-      }
+      generated += 1
     }
+
+    results.push({
+      company: company.name,
+      generated,
+      skippedDuplicates,
+      published: 0,
+      approved: 0,
+      rejected: 0,
+    })
+  }
+
+  // Sort globally by score, highest first
+  allScored.sort((a, b) => b.score.publishScore - a.score.publishScore)
+
+  // Publishing rules
+  const MAX_PUBLISHED_TOTAL = 3
+  const MIN_PUBLISH_SCORE = 80
+  const MIN_APPROVED_SCORE = 65
+  const publishedCompanyIds = new Set<string>()
+  let publishedCount = 0
+
+  for (const item of allScored) {
+    const { company, source, candidate, score } = item
+
+    let status: "suggested" | "approved" | "published" | "rejected" = "approved"
+
+    const canPublish =
+      score.decision === "publish" &&
+      score.publishScore >= MIN_PUBLISH_SCORE &&
+      publishedCount < MAX_PUBLISHED_TOTAL &&
+      !publishedCompanyIds.has(company._id)
+
+    if (canPublish) {
+      status = "published"
+      publishedCount += 1
+      publishedCompanyIds.add(company._id)
+    } else if (
+      score.decision === "reject" ||
+      score.publishScore < 50
+    ) {
+      status = "rejected"
+    } else if (score.publishScore < MIN_APPROVED_SCORE) {
+      status = "rejected"
+    } else {
+      status = "approved"
+    }
+
+    await createSignalCandidate(
+      company,
+      candidate,
+      source,
+      status,
+      score.publishScore
+    )
+
+    const resultRow = results.find((r) => r.company === company.name)
+    if (resultRow) {
+      if (status === "published") resultRow.published += 1
+      if (status === "approved") resultRow.approved += 1
+      if (status === "rejected") resultRow.rejected += 1
+    }
+  }
+
+  // Update company timestamps
+  const now = new Date().toISOString()
+
+  for (const company of companies) {
+    const resultRow = results.find((r) => r.company === company.name)
 
     await sanity
       .patch(company._id)
       .set({
-        lastMinedAt: new Date().toISOString(),
-        ...(published > 0 ? { lastCoveredAt: new Date().toISOString() } : {}),
+        lastMinedAt: now,
+        ...(resultRow && resultRow.published > 0
+          ? { lastCoveredAt: now }
+          : {}),
       })
       .commit()
-
-    results.push({
-      company: company.name,
-      created,
-      published,
-      skippedDuplicates,
-    })
   }
 
   return NextResponse.json({
     ok: true,
     companiesProcessed: companies.length,
+    totalCandidatesScored: allScored.length,
+    totalPublished: publishedCount,
     results,
   })
 }

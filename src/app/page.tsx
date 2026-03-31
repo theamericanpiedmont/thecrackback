@@ -1,3 +1,4 @@
+// file: src/app/page.tsx
 import Link from "next/link"
 import imageUrlBuilder from "@sanity/image-url"
 import Masthead from "@/components/Masthead"
@@ -65,11 +66,11 @@ function LockedCard({
         <span className="text-xs opacity-40">Locked</span>
       </div>
 
-      <h3 className="max-w-md text-2xl font-semibold tracking-[-0.02em] opacity-60">
+      <h3 className="max-w-md text-[1.65rem] font-semibold leading-[1.05] tracking-[-0.025em] text-balance opacity-65">
         {title}
       </h3>
 
-      <p className="mt-3 max-w-md text-[16px] leading-7 opacity-55">
+      <p className="mt-3 max-w-md text-[15px] leading-7 opacity-55">
         {dek}
       </p>
 
@@ -80,22 +81,20 @@ function LockedCard({
 
 function SquibCard({ squib }: { squib: any }) {
   return (
-    <article className="mx-auto max-w-md py-4 text-center">
+    <article className="mx-auto max-w-2xl py-1 text-center">
       <Link href={`/squibs/${squib.slug}`} className="block">
-        <div className="text-[10px] font-semibold uppercase tracking-[0.2em] opacity-40">
+        <div className="text-[10px] font-semibold uppercase tracking-[0.22em] opacity-38">
           Squib
         </div>
 
         {squib.squibType === "quote" && squib.quoteText ? (
           <>
-            <blockquote className="mt-3 text-lg font-semibold leading-snug tracking-tight sm:text-xl">
+            <blockquote className="mt-2 text-[1.7rem] font-semibold leading-[1.12] tracking-[-0.025em] text-balance sm:text-[1.85rem]">
               “{squib.quoteText}”
             </blockquote>
 
             {squib.attribution ? (
-              <p className="mt-2 text-xs opacity-55">
-                — {squib.attribution}
-              </p>
+              <p className="mt-2 text-xs opacity-55">— {squib.attribution}</p>
             ) : null}
           </>
         ) : squib.squibType === "image" && squib.image ? (
@@ -108,7 +107,7 @@ function SquibCard({ squib }: { squib: any }) {
               />
             </figure>
 
-            <h3 className="mt-3 text-lg font-semibold tracking-tight">
+            <h3 className="mt-3 text-xl font-semibold leading-[1.1] tracking-[-0.02em] text-balance">
               {squib.title}
             </h3>
 
@@ -120,7 +119,7 @@ function SquibCard({ squib }: { squib: any }) {
           </>
         ) : (
           <>
-            <h3 className="mt-3 text-lg font-semibold tracking-tight">
+            <h3 className="mt-3 text-xl font-semibold leading-[1.1] tracking-[-0.02em] text-balance">
               {squib.title}
             </h3>
 
@@ -139,9 +138,7 @@ function SquibCard({ squib }: { squib: any }) {
                 {squib.socialHandle ? ` · ${squib.socialHandle}` : ""}
               </p>
             ) : squib.sourceName ? (
-              <p className="mt-2 text-xs opacity-50">
-                {squib.sourceName}
-              </p>
+              <p className="mt-2 text-xs opacity-50">{squib.sourceName}</p>
             ) : null}
           </>
         )}
@@ -170,20 +167,18 @@ function PostCard({ post }: { post: any }) {
           </p>
         ) : null}
 
-        <h3 className="max-w-xl text-2xl font-semibold tracking-[-0.02em] text-balance">
+        <h3 className="max-w-3xl text-[2rem] font-semibold leading-[1.03] tracking-[-0.025em] text-balance">
           {post.title}
         </h3>
 
         {post.dek ? (
-          <p className="mt-3 max-w-xl text-[17px] leading-7 opacity-72">
+          <p className="mt-3 max-w-2xl text-[16px] leading-7 opacity-72">
             {post.dek}
           </p>
         ) : null}
 
         {post.publishedAt ? (
-          <p className="mt-3 text-sm opacity-45">
-            {formatDate(post.publishedAt)}
-          </p>
+          <p className="mt-3 text-sm opacity-45">{formatDate(post.publishedAt)}</p>
         ) : null}
       </Link>
     </article>
@@ -211,8 +206,8 @@ function SignalsRail({ signals }: { signals: any[] }) {
 
   return (
     <aside className="border-t border-black/10 pt-6 dark:border-white/10">
-      <div className="mb-4 flex items-center justify-between gap-4">
-        <h2 className="text-sm font-semibold uppercase tracking-[0.18em] opacity-60">
+      <div className="mb-5 flex items-center justify-between gap-4">
+        <h2 className="text-[0.95rem] font-semibold uppercase tracking-[0.2em] opacity-58">
           Signals Today
         </h2>
 
@@ -238,7 +233,7 @@ function SignalsRail({ signals }: { signals: any[] }) {
                 className="block transition-opacity hover:opacity-85"
               >
                 <div className="flex items-start gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/15 text-[10px] font-semibold uppercase tracking-[0.12em] dark:border-white/15">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-black/15 text-[10px] font-semibold uppercase tracking-[0.12em] dark:border-white/15">
                     {ticker}
                   </div>
 
@@ -247,13 +242,14 @@ function SignalsRail({ signals }: { signals: any[] }) {
                       {signal.company || signal.sourceName || "Signal"}
                     </p>
 
-                    <h3 className="mt-1 text-[14px] font-semibold leading-[1.35] tracking-[-0.01em]">
+                    <h3 className="mt-1 text-[15px] font-semibold leading-[1.28] tracking-[-0.012em] text-balance">
                       {signal.title}
                     </h3>
 
                     {signal.summary ? (
-                      <p className="mt-1 text-[12px] leading-[1.45] opacity-68 line-clamp-2">
-                        <span className="font-semibold">Translation:</span> {signal.summary}
+                      <p className="mt-1 text-[12px] leading-[1.5] opacity-66 line-clamp-2">
+                        <span className="font-semibold">Translation:</span>{" "}
+                        {signal.summary}
                       </p>
                     ) : null}
                   </div>
@@ -280,38 +276,38 @@ export default async function HomePage() {
     <main className="min-h-screen">
       <Masthead />
 
-      <div className="mx-auto max-w-6xl px-6 pb-24 pt-10">
+      <div className="mx-auto max-w-6xl px-6 pb-20 pt-10">
         {(lead || signals?.length) ? (
-          <section className="mb-24">
-            <div className="grid gap-12 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-start">
+          <section className="mb-16">
+            <div className="grid gap-12 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start lg:gap-14">
               <SignalsRail signals={signals} />
 
               {lead ? (
                 <div className="border-t border-black/10 pt-6 dark:border-white/10">
                   <Link
                     href={`/posts/${lead.slug}`}
-                    className="block transition-opacity duration-200 hover:opacity-90"
+                    className="block transition-opacity duration-200 hover:opacity-92"
                   >
-                    <div className="grid gap-10 md:grid-cols-2 md:items-center">
-                      <div>
+                    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(340px,0.88fr)] lg:items-center lg:gap-10">
+                      <div className="max-w-[40rem]">
                         {lead.company ? (
-                          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] opacity-50">
+                          <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.24em] opacity-48">
                             {lead.company}
                           </p>
                         ) : null}
 
-                        <h1 className="text-4xl font-semibold leading-[1.05] tracking-[-0.04em] text-balance sm:text-5xl md:text-6xl">
+                        <h1 className="max-w-[13ch] text-[clamp(2.2rem,3.6vw,3.3rem)] font-semibold leading-[1] tracking-[-0.025em] text-balance">
                           {lead.title}
                         </h1>
 
                         {lead.dek ? (
-                          <p className="mt-5 max-w-xl text-lg leading-8 opacity-75 sm:text-xl">
+                          <p className="mt-4 max-w-[30rem] text-[0.98rem] leading-[1.6] opacity-72">
                             {lead.dek}
                           </p>
                         ) : null}
 
                         {lead.publishedAt ? (
-                          <p className="mt-5 text-sm opacity-45">
+                          <p className="mt-4 text-sm opacity-42">
                             {formatDate(lead.publishedAt)}
                           </p>
                         ) : null}
@@ -320,9 +316,9 @@ export default async function HomePage() {
                       {lead.coverImage ? (
                         <figure className="overflow-hidden rounded-sm border border-black/5 dark:border-white/10">
                           <img
-                            src={urlFor(lead.coverImage).width(1200).height(800).url()}
+                            src={urlFor(lead.coverImage).width(1400).height(980).url()}
                             alt={lead.coverImage?.alt || lead.title || ""}
-                            className="h-[260px] w-full object-cover md:h-[320px]"
+                            className="h-[260px] w-full object-cover sm:h-[300px] lg:h-[320px]"
                           />
                         </figure>
                       ) : null}
@@ -342,7 +338,7 @@ export default async function HomePage() {
           </div>
 
           {feedItems.length ? (
-            <div className="space-y-16">
+            <div className="space-y-12">
               {feedItems.map((item, index) =>
                 item.type === "post" ? (
                   <PostCard
@@ -360,7 +356,8 @@ export default async function HomePage() {
           ) : (
             <div className="max-w-xl">
               <p className="text-lg leading-8 opacity-65">
-                Crackback publishes deliberately. More stories will appear here soon.
+                Crackback publishes deliberately. More stories will appear here
+                soon.
               </p>
             </div>
           )}
@@ -372,7 +369,8 @@ export default async function HomePage() {
               Subscriber Edition
             </h2>
             <p className="mt-3 max-w-2xl text-lg leading-8 opacity-70">
-              Deep dives, document work, and extra reporting for readers who want the full file.
+              Deep dives, document work, and extra reporting for readers who
+              want the full file.
             </p>
           </div>
 
