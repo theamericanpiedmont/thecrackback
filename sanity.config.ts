@@ -16,8 +16,11 @@ import {
   rejectNowAction,
 } from "./src/sanity/documentActions/marginaliaSignalActions"
 
-console.log("SANITY_SCHEMA_TYPE_NAMES", schema?.types?.map((t: any) => t?.name))
+import { cockpitTool } from "./src/sanity/cockpit/cockpitTool"
+
 import { assertNoDuplicateSchemaNames } from "./src/sanity/schemaTypes/_debugSchema"
+
+console.log("SANITY_SCHEMA_TYPE_NAMES", schema?.types?.map((t: any) => t?.name))
 assertNoDuplicateSchemaNames()
 
 export default defineConfig({
@@ -28,6 +31,7 @@ export default defineConfig({
   schema,
 
   plugins: [
+    cockpitTool(),
     structureTool({ structure }),
     visionTool({ defaultApiVersion: apiVersion }),
   ],
@@ -37,7 +41,6 @@ export default defineConfig({
       const { schemaType } = context
 
       if (schemaType === "marginaliaSignal") {
-        // Put our buttons at the front, keep the defaults after
         return [publishNowAction, rejectNowAction, ...prev]
       }
 
